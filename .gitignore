@@ -1,0 +1,8 @@
+.bundle/
+log/*.log
+pkg/
+spec/dummy/
+*.swp
+*.swo
+*.gem
+coverage/

@@ -1,5 +1,7 @@
 # ShadowModel
 
+[![Build Status](https://travis-ci.org/cctiger36/shadow_model.png?branch=master)](https://travis-ci.org/cctiger36/shadow_model)
+
 TODO: Write a gem description
 
 ## Installation

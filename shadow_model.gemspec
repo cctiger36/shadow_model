@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = ShadowModel::VERSION
   spec.authors       = ["Weihu Chen"]
   spec.email         = ["cctiger36@gmail.com"]
-  spec.summary       = %q{A rails plugin for cache models.}
-  spec.description   = %q{A rails plugin for cache models.}
+  spec.summary       = %q{rails model cache with redis}
+  spec.description   = %q{A rails plugin use reids to cache models data.}
   spec.homepage      = ""
   spec.license       = "MIT"
 

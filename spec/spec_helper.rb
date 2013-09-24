@@ -1,6 +1,8 @@
 $:.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 require 'redis'
 require 'shadow_model'
+require 'coveralls'
+Coveralls.wear!
 
 REDIS_PORT = ENV['REDIS_PORT'] || 6379
 REDIS_HOST = ENV['REDIS_HOST'] || 'localhost'

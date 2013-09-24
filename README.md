@@ -2,7 +2,7 @@
 
 A rails plugin use redis to cache models data.
 
-[![Build Status](https://travis-ci.org/cctiger36/shadow_model.png?branch=master)](https://travis-ci.org/cctiger36/shadow_model)
+[![Build Status](https://travis-ci.org/cctiger36/shadow_model.png?branch=master)](https://travis-ci.org/cctiger36/shadow_model) [![Gem Version](https://badge.fury.io/rb/shadow_model.png)](http://badge.fury.io/rb/shadow_model) [![Coverage Status](https://coveralls.io/repos/cctiger36/shadow_model/badge.png)](https://coveralls.io/r/cctiger36/shadow_model)
 
 ## Installation
 

@@ -42,12 +42,12 @@ module ShadowModel
     end
 
     def update_expiration
-      if self.class.shadow_options[:expiration].present?
+      if expiration = self.class.shadow_options[:expiration]
         if self.class.shadow_options[:update_expiration] || shadow_ttl < 0
-          Redis.current.expire(shadow_cache_key, self.class.shadow_options[:expiration])
+          Redis.current.expire(shadow_cache_key, expiration)
         end
-      elsif self.class.shadow_options[:expireat].present?
-        Redis.current.expireat(shadow_cache_key, self.class.shadow_options[:expireat].to_i) if shadow_ttl < 0
+      elsif expireat = self.class.shadow_options[:expireat]
+        Redis.current.expireat(shadow_cache_key, expireat.to_i) if shadow_ttl < 0
       end
     end
 

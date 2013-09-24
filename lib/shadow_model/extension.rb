@@ -2,8 +2,7 @@ module ShadowModel
   module Extension
     def self.included(base)
       base.class_eval <<-RUBY
-        mattr_accessor :shadow_attributes
-        mattr_accessor :shadow_methods
+        mattr_accessor :shadow_options
         extend ClassMethods
         after_save :update_shadow_cache
       RUBY
@@ -18,7 +17,7 @@ module ShadowModel
     end
 
     def shadow_cache_key
-      self.class.build_shadow_cache_key self[self.class.primary_key]
+      @shadow_cache_key ||= self.class.build_shadow_cache_key(self[self.class.primary_key])
     end
 
     def shadow_data
@@ -39,12 +38,28 @@ module ShadowModel
 
     def update_shadow_cache
       Redis.current.set(shadow_cache_key, build_shadow_data)
+      update_expiration
+    end
+
+    def update_expiration
+      if self.class.shadow_options[:expiration].present?
+        if self.class.shadow_options[:update_expiration] || shadow_ttl < 0
+          Redis.current.expire(shadow_cache_key, self.class.shadow_options[:expiration])
+        end
+      elsif self.class.shadow_options[:expireat].present?
+        Redis.current.expireat(shadow_cache_key, self.class.shadow_options[:expireat].to_i) if shadow_ttl < 0
+      end
+    end
+
+    def shadow_ttl
+      Redis.current.ttl(shadow_cache_key)
     end
 
     module ClassMethods
       def set_shadow_keys(args, options = {})
         @shadow_attributes ||= []
         @shadow_methods ||= []
+        self.shadow_options = options
         args.each do |arg|
           if self.attribute_names.include?(arg.to_s)
             @shadow_attributes << arg.to_sym

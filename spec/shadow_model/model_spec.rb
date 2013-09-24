@@ -52,5 +52,43 @@ describe Player do
       shadow_player.tension.should == player.tension
       shadow_player.cacheable_method.should == player.cacheable_method
     end
+
+    it "should can call the uncached methods as the original model" do
+      shadow_player.not_cacheable_method.should == :not_cacheable_method
+    end
+  end
+
+  context "shadow expiration setted" do
+    before do
+      Player.shadow_options[:expiration] = 10.seconds
+      player.save!
+    end
+
+    after { Player.shadow_options = {} }
+
+    it "should expire after setted expiration" do
+      player.shadow_ttl.should be_between 9, 10
+    end
+
+    it "should update expiration everytime cache updated if update_expiration setted" do
+      Player.shadow_options[:update_expiration] = true
+      player.shadow_ttl.should be_between 9, 10
+      Player.shadow_options[:expiration] = 20.seconds
+      player.save!
+      player.shadow_ttl.should be_between 19, 20
+    end
+  end
+
+  context "shadow expireat setted" do
+    before do
+      Player.shadow_options[:expireat] = Time.now + 30.seconds
+      player.save!
+    end
+
+    after { Player.shadow_options = {} }
+
+    it "should expire after setted expireat" do
+      player.shadow_ttl.should be_between 29, 30
+    end
   end
 end

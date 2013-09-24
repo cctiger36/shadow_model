@@ -12,6 +12,13 @@ describe Player do
     it "should retrieve cache data as a hash" do
       Player.find_shadow_data(player.id).should be_an_instance_of Hash
     end
+
+    it "should save data to cache first cache data not exists" do
+      player.clear_shadow_data
+      shadow_player = Player.find_by_shadow(player.id)
+      Redis.current.get(player.shadow_cache_key).should_not be_nil
+      shadow_player.should be_shadow_model
+    end
   end
 
   describe ".find_by_shadow" do

@@ -101,7 +101,6 @@ module ShadowModel
         end
       end
 
-      # TODO load from database if not found
       def find_by_shadow(id)
         if shadow_data = find_shadow_data(id)
           instance = self.new
@@ -110,7 +109,9 @@ module ShadowModel
           instance.readonly!
           instance
         else
-          nil
+          instance = self.find(id)
+          instance.update_shadow_cache
+          find_by_shadow(id)
         end
       end
 

@@ -53,7 +53,12 @@ describe Player do
       shadow_player.name
     end
 
+    it "should cache primary key as default" do
+      shadow_player.shadow_data.keys.should include(:id)
+    end
+
     it "should have same values with the original model" do
+      shadow_player.id.should == player.id
       shadow_player.name.should == player.name
       shadow_player.stamina.should == player.stamina
       shadow_player.tension.should == player.tension

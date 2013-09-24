@@ -67,6 +67,7 @@ module ShadowModel
             @shadow_methods << arg.to_sym
           end
         end
+        @shadow_attributes << primary_key.to_sym if !@shadow_attributes.include?(primary_key.to_sym)
         @shadow_attributes.each { |attr| define_shadow_attributes(attr) }
       end
 

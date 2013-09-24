@@ -29,11 +29,11 @@ And use this to retrieve the model from redis.
 <table>
   <tr>
     <td>expiration</td><td>Set the timeout of each cache.</td>
-  <tr>
   </tr>
+  <tr>
     <td>&nbsp;&nbsp;update_expiration</td><td>Reset cache expiration after model updated.</td>
   </tr>
-  </tr>
+  <tr>
     <td>expireat</td><td>Set the absolute timeout timestamp of each cache.</td>
   </tr>
 </table>

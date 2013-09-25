@@ -13,22 +13,23 @@ ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':me
 
 ActiveRecord::Schema.define(:version => 0) do
   create_table :players do |t|
+    t.integer :game_id
     t.string :name
     t.integer :stamina
     t.integer :tension
+    t.timestamps
   end
-end
 
-RSpec.configure do |config|
-  config.after(:all) do
-    ActiveRecord::Base.connection.tables.each do |table|
-      ActiveRecord::Base.connection.drop_table(table)
-    end
+  create_table :games do |t|
+    t.string :name
+    t.timestamps
   end
 end
 
 class Player < ActiveRecord::Base
-  shadow_model :name, :stamina, :tension, :cacheable_method
+  shadow_model :name, :stamina, :tension, :game_id, :cacheable_method
+
+  belongs_to :game
 
   def cacheable_method
     __method__
@@ -37,4 +38,8 @@ class Player < ActiveRecord::Base
   def not_cacheable_method
     __method__
   end
+end
+
+class Game < ActiveRecord::Base
+  has_many :players
 end

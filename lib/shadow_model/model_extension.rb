@@ -26,6 +26,12 @@ module ShadowModel
 
     def shadow_data=(data)
       @shadow_data = data
+      self.class.attribute_names.each do |attribute_name|
+        attribute_name = attribute_name.to_sym
+        if value = data[attribute_name]
+          self[attribute_name] = value
+        end
+      end
     end
 
     def clear_shadow_data

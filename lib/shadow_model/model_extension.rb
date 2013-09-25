@@ -1,5 +1,5 @@
 module ShadowModel
-  module Extension
+  module ModelExtension
     def self.included(base)
       base.class_eval <<-RUBY
         mattr_accessor :shadow_options

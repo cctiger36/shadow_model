@@ -26,6 +26,14 @@ ActiveRecord::Schema.define(:version => 0) do
   end
 end
 
+RSpec.configure do |config|
+  config.after(:all) do
+    ActiveRecord::Base.connection.tables.each do |table|
+      ActiveRecord::Base.connection.execute("DELETE FROM #{table}")
+    end
+  end
+end
+
 class Player < ActiveRecord::Base
   shadow_model :name, :stamina, :tension, :game_id, :cacheable_method
 

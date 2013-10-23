@@ -16,7 +16,7 @@ And then execute:
 
 ## Usage
 
-Add this to your model class, then the models will be cached with the assigned attributes and methods after the model saved or updated.
+Add this to your model class, then the models will be cached with the assigned attributes and methods after saved or updated.
 
     shadow_model attribute_or_method1, attribute_or_method2, ..., options
 
@@ -31,7 +31,7 @@ And use this to retrieve the model from redis.
     <td>expiration</td><td>Set the timeout of each cache.</td>
   </tr>
   <tr>
-    <td>&nbsp;&nbsp;update_expiration</td><td>Reset cache expiration after model updated.</td>
+    <td>update_expiration</td><td>Reset cache expiration after model updated(if expiration has been set).</td>
   </tr>
   <tr>
     <td>expireat</td><td>Set the absolute timeout timestamp of each cache.</td>

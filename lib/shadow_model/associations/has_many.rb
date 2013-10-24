@@ -1,5 +1,5 @@
 class ::ActiveRecord::Associations::Builder::HasMany
-  if self.respond_to?(:valid_options=)
+  if self.instance_methods.include?(:valid_options=)
     self.valid_options += [:shadow]
   else
     def valid_options_with_shadow_option

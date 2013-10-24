@@ -44,6 +44,7 @@ module ShadowModel
     end
 
     def update_shadow_cache
+      return if shadow_options[:association_only]
       Redis.current.set(shadow_cache_key, build_shadow_data)
       update_expiration
     end

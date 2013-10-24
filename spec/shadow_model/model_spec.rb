@@ -119,4 +119,12 @@ describe Player do
       shadow_player.game.should == associated_player.game
     end
   end
+
+  context "association_only option" do
+    before { Player.shadow_options[:association_only] = true }
+    after { Player.shadow_options[:association_only] = false }
+    it "should not cache model data seperately" do
+      expect(Player.find_shadow_data(player.id)).to be_nil
+    end
+  end
 end

@@ -80,7 +80,7 @@ module ShadowModel
       end
 
       def shadow_keys
-        @shadow_attributes + @shadow_methods
+        (@shadow_attributes || []) + (@shadow_methods || [])
       end
 
       def method_added(method_name)

@@ -1,8 +1,12 @@
 class ::ActiveRecord::Associations::Builder::HasMany
-  def valid_options_with_shadow_option
-    valid_options_without_shadow_option + [:shadow]
+  if self.respond_to?(:valid_options=)
+    self.valid_options += [:shadow]
+  else
+    def valid_options_with_shadow_option
+      valid_options_without_shadow_option + [:shadow]
+    end
+    alias_method_chain :valid_options, :shadow_option
   end
-  alias_method_chain :valid_options, :shadow_option
 
   def build_with_shadow_option
     reflection = build_without_shadow_option

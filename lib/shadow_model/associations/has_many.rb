@@ -34,7 +34,9 @@ class ::ActiveRecord::Associations::Builder::HasMany
         end
 
         def update_shadow_cach_of_#{model_name}
-          Redis.current.hset(belongs_to_#{model_name}_shadow_cache_key, self[self.class.primary_key], self.build_shadow_data)
+          cache_key = belongs_to_#{model_name}_shadow_cache_key
+          Redis.current.hset(cache_key, self[self.class.primary_key], self.build_shadow_data)
+          update_expiration(cache_key)
         end
 
         def delete_shadow_cach_of_#{model_name}

@@ -46,16 +46,16 @@ module ShadowModel
     def update_shadow_cache
       return if shadow_options[:association_only]
       Redis.current.set(shadow_cache_key, build_shadow_data)
-      update_expiration
+      update_expiration(shadow_cache_key)
     end
 
-    def update_expiration
+    def update_expiration(cache_key)
       if expiration = self.class.shadow_options[:expiration]
         if self.class.shadow_options[:update_expiration] || shadow_ttl < 0
-          Redis.current.expire(shadow_cache_key, expiration)
+          Redis.current.expire(cache_key, expiration)
         end
       elsif expireat = self.class.shadow_options[:expireat]
-        Redis.current.expireat(shadow_cache_key, expireat.to_i) if shadow_ttl < 0
+        Redis.current.expireat(cache_key, expireat.to_i) if shadow_ttl < 0
       end
     end
 

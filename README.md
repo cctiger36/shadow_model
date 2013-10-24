@@ -41,7 +41,7 @@ And use this to retrieve the model from redis.
   </tr>
 </table>
 
-## Example
+### Example
 
     # == Schema Information
     #
@@ -59,4 +59,28 @@ And use this to retrieve the model from redis.
       def cacheable_method
         "result to cache"
       end
+    end
+
+## Associations
+
+### has_many
+
+You can set the shadow option of has_many association to allow shadow_model to cache all the related models.
+
+    class Game < ActiveRecord::Base
+      has_many :players, shadow: true
+    end
+
+This will use hash data structure of redis to save the cache data, and you can retrieve all of them with one redis connection.
+
+    game = Game.create(name: "pikmin")
+    game.players.create(name: "player one")
+    game.players.create(name: "player two")
+
+    game.players_by_shadow # [#<Player id: 1, game_id: 1, name: "player one", ...>, #<Player id: 2, game_id: 1, name: "player two", ...>]
+
+If you don't want to cache models seperately and use the association type only, you can set the association_only option to disable it.
+
+    class Player < ActiveRecord::Base
+      shadow_model ..., association_only: true
     end

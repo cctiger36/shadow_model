@@ -11,7 +11,7 @@ class ::ActiveRecord::Associations::Builder::HasMany
   def build_with_shadow_option
     reflection = build_without_shadow_option
     if options[:shadow]
-      model_name = model.table_name.singularize
+      model_name = model.name.tr('::', '').underscore
       model.class_eval <<-RUBY
         def #{name}_shadow_cache_key
           "#{model_name}_\#{self[self.class.primary_key]}_#{name}_shadow_cache"
@@ -30,20 +30,20 @@ class ::ActiveRecord::Associations::Builder::HasMany
       RUBY
 
       reflection.klass.class_eval <<-RUBY
-        after_save :update_shadow_cach_of_#{model_name}
-        after_destroy :delete_shadow_cach_of_#{model_name}
+        after_save :update_shadow_cache_of_#{model_name}
+        after_destroy :delete_shadow_cache_of_#{model_name}
 
         def belongs_to_#{model_name}_shadow_cache_key
           "#{model_name}_\#{self[:#{reflection.foreign_key}]}_#{name}_shadow_cache"
         end
 
-        def update_shadow_cach_of_#{model_name}
+        def update_shadow_cache_of_#{model_name}
           cache_key = belongs_to_#{model_name}_shadow_cache_key
           Redis.current.hset(cache_key, self[self.class.primary_key], self.build_shadow_data)
           update_expiration(cache_key)
         end
 
-        def delete_shadow_cach_of_#{model_name}
+        def delete_shadow_cache_of_#{model_name}
           Redis.current.hdel(belongs_to_#{model_name}_shadow_cache_key, self[self.class.primary_key])
         end
       RUBY

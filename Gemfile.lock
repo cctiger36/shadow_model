@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shadow_model (0.1.2)
+    shadow_model (0.2.0)
       rails (>= 3.1.0)
       redis (>= 3.0.0)
 

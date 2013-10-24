@@ -22,7 +22,10 @@ Add this to your model class, then the models will be cached with the assigned a
 
 And use this to retrieve the model from redis.
 
-    YourModelClass.find_by_shadow(primary_key)
+    model = YourModelClass.find_by_shadow(primary_key)
+
+    model.is_a?(YourModelClass) # true
+    model.readonly?             # true
 
 ### options
 
@@ -31,7 +34,7 @@ And use this to retrieve the model from redis.
     <td>expiration</td><td>Set the timeout of each cache.</td>
   </tr>
   <tr>
-    <td>update_expiration</td><td>Reset cache expiration after model updated(if expiration has been set).</td>
+    <td>update_expiration</td><td>Reset cache expiration after model updated (if expiration has been set).</td>
   </tr>
   <tr>
     <td>expireat</td><td>Set the absolute timeout timestamp of each cache.</td>

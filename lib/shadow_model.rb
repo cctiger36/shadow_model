@@ -17,3 +17,5 @@ module ShadowModel
 end
 
 ActiveRecord::Base.send :include, ShadowModel
+
+require 'shadow_model/associations/has_many'

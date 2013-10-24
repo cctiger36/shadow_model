@@ -8,6 +8,11 @@ describe Player do
     Redis.current.get(player.shadow_cache_key).should_not be_nil
   end
 
+  it "should clear cached data after destroyed" do
+    player.destroy
+    expect(Player.find_shadow_data(player.id)).to be_nil
+  end
+
   describe ".find_shadow_data" do
     it "should retrieve cache data as a hash" do
       Player.find_shadow_data(player.id).should be_an_instance_of Hash
@@ -101,6 +106,17 @@ describe Player do
 
     it "should expire after setted expireat" do
       player.shadow_ttl.should be_between 29, 30
+    end
+  end
+
+  context "association" do
+    let(:game) { Game.create!(name: 'game one') }
+    let(:associated_player) { Player.create!(name: 'player one', stamina: 3, tension: 5, game_id: game.id) }
+    let(:shadow_player) { Player.find_by_shadow(associated_player.id) }
+    after { associated_player.clear_shadow_data }
+
+    it "should return associated model when call the association methods" do
+      shadow_player.game.should == associated_player.game
     end
   end
 end

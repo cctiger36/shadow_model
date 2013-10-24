@@ -5,6 +5,7 @@ module ShadowModel
         mattr_accessor :shadow_options
         extend ClassMethods
         after_save :update_shadow_cache
+        after_destroy :clear_shadow_data
       RUBY
     end
 
@@ -110,11 +111,7 @@ module ShadowModel
 
       def find_by_shadow(id)
         if shadow_data = find_shadow_data(id)
-          instance = self.new
-          instance.shadow_model = true
-          instance.shadow_data = shadow_data
-          instance.readonly!
-          instance
+          instantiate_shadow_model(shadow_data)
         else
           instance = self.find(id)
           instance.update_shadow_cache
@@ -125,6 +122,14 @@ module ShadowModel
       def find_shadow_data(id)
         data = Redis.current.get(build_shadow_cache_key(id))
         data ? Marshal.load(data) : nil
+      end
+
+      def instantiate_shadow_model(shadow_data)
+        instance = self.new
+        instance.shadow_model = true
+        instance.shadow_data = shadow_data
+        instance.readonly!
+        instance
       end
 
       def build_shadow_cache_key(id)

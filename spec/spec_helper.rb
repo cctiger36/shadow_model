@@ -49,5 +49,5 @@ class Player < ActiveRecord::Base
 end
 
 class Game < ActiveRecord::Base
-  has_many :players
+  has_many :players, shadow: true
 end

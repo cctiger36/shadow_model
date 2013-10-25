@@ -127,4 +127,10 @@ describe Player do
       expect(Player.find_shadow_data(player.id)).to be_nil
     end
   end
+
+  describe "reload" do
+    it "should reload remove the readonly attribute" do
+      expect(Player.find_by_shadow(player.id).reload).not_to be_readonly
+    end
+  end
 end

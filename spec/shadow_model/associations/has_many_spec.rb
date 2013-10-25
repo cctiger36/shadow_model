@@ -19,6 +19,12 @@ describe Game do
     end
   end
 
+  it "should update cache data after Player updated" do
+    player = game.players.first
+    player.update_attributes!(name: "Updated Name")
+    expect(game.players_by_shadow.detect{|s| s.id == player.id}.name).to eq("Updated Name")
+  end
+
   it "should remove cache data after Player destroyed" do
     expect{ game.players.last.destroy }.to change{ game.players_by_shadow.count }.by(-1)
   end

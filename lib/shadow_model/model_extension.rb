@@ -17,6 +17,14 @@ module ShadowModel
       @shadow_model = value
     end
 
+    def reload
+      if shadow_model?
+        self.class.find(self[self.class.primary_key])
+      else
+        super
+      end
+    end
+
     def shadow_cache_key
       @shadow_cache_key ||= self.class.build_shadow_cache_key(self[self.class.primary_key])
     end
@@ -50,11 +58,11 @@ module ShadowModel
     end
 
     def update_expiration(cache_key)
-      if expiration = self.class.shadow_options[:expiration]
-        if self.class.shadow_options[:update_expiration] || shadow_ttl < 0
+      if expiration = shadow_options[:expiration]
+        if shadow_options[:update_expiration] || shadow_ttl < 0
           Redis.current.expire(cache_key, expiration)
         end
-      elsif expireat = self.class.shadow_options[:expireat]
+      elsif expireat = shadow_options[:expireat]
         Redis.current.expireat(cache_key, expireat.to_i) if shadow_ttl < 0
       end
     end
@@ -111,7 +119,7 @@ module ShadowModel
       end
 
       def find_by_shadow(id)
-        raise "Cannot find seperate shadow cache with association_only option set" if options[:association_only]
+        raise "Cannot find seperate shadow cache with association_only option set" if shadow_options[:association_only]
         if shadow_data = find_shadow_data(id)
           instantiate_shadow_model(shadow_data)
         else

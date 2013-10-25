@@ -9,68 +9,6 @@ module ShadowModel
       RUBY
     end
 
-    def shadow_model?
-      @shadow_model
-    end
-
-    def shadow_model=(value)
-      @shadow_model = value
-    end
-
-    def reload
-      if shadow_model?
-        self.class.find(self[self.class.primary_key])
-      else
-        super
-      end
-    end
-
-    def shadow_cache_key
-      @shadow_cache_key ||= self.class.build_shadow_cache_key(self[self.class.primary_key])
-    end
-
-    def shadow_data
-      @shadow_data ||= self.class.find_shadow_data(self[self.class.primary_key])
-    end
-
-    def shadow_data=(data)
-      @shadow_data = data
-      self.class.attribute_names.each do |attribute_name|
-        attribute_name = attribute_name.to_sym
-        if value = data[attribute_name]
-          self[attribute_name] = value
-        end
-      end
-    end
-
-    def clear_shadow_data
-      Redis.current.del(shadow_cache_key)
-    end
-
-    def build_shadow_data
-      Marshal.dump(self.class.shadow_keys.inject({}) { |data, attr| data[attr] = send(attr); data })
-    end
-
-    def update_shadow_cache
-      return if shadow_options[:association_only]
-      Redis.current.set(shadow_cache_key, build_shadow_data)
-      update_expiration(shadow_cache_key)
-    end
-
-    def update_expiration(cache_key)
-      if expiration = shadow_options[:expiration]
-        if shadow_options[:update_expiration] || shadow_ttl < 0
-          Redis.current.expire(cache_key, expiration)
-        end
-      elsif expireat = shadow_options[:expireat]
-        Redis.current.expireat(cache_key, expireat.to_i) if shadow_ttl < 0
-      end
-    end
-
-    def shadow_ttl
-      Redis.current.ttl(shadow_cache_key)
-    end
-
     module ClassMethods
       def set_shadow_keys(args, options = {})
         @shadow_attributes ||= []
@@ -136,14 +74,72 @@ module ShadowModel
 
       def instantiate_shadow_model(shadow_data)
         instance = self.new
-        instance.shadow_model = true
-        instance.shadow_data = shadow_data
+        instance.instance_variable_set(:@shadow_model, true)
+        instance.send(:shadow_data=, shadow_data)
         instance.readonly!
         instance
       end
 
       def build_shadow_cache_key(id)
         "#{self.name.tableize}:Shadow:#{id}"
+      end
+    end
+
+    def shadow_model?
+      @shadow_model
+    end
+
+    def reload
+      self.instance_variable_set(:@readonly, false)
+      @shadow_model = false
+      super
+    end
+
+    def shadow_cache_key
+      @shadow_cache_key ||= self.class.build_shadow_cache_key(self[self.class.primary_key])
+    end
+
+    def shadow_data
+      @shadow_data ||= self.class.find_shadow_data(self[self.class.primary_key])
+    end
+
+    def clear_shadow_data
+      Redis.current.del(shadow_cache_key)
+    end
+
+    def build_shadow_data
+      Marshal.dump(self.class.shadow_keys.inject({}) { |data, attr| data[attr] = send(attr); data })
+    end
+
+    def update_shadow_cache
+      return if shadow_options[:association_only]
+      Redis.current.set(shadow_cache_key, build_shadow_data)
+      update_expiration(shadow_cache_key)
+    end
+
+    def update_expiration(cache_key)
+      if expiration = shadow_options[:expiration]
+        if shadow_options[:update_expiration] || shadow_ttl < 0
+          Redis.current.expire(cache_key, expiration)
+        end
+      elsif expireat = shadow_options[:expireat]
+        Redis.current.expireat(cache_key, expireat.to_i) if shadow_ttl < 0
+      end
+    end
+
+    def shadow_ttl
+      Redis.current.ttl(shadow_cache_key)
+    end
+
+    private
+
+    def shadow_data=(data)
+      @shadow_data = data
+      self.class.attribute_names.each do |attribute_name|
+        attribute_name = attribute_name.to_sym
+        if value = data[attribute_name]
+          self[attribute_name] = value
+        end
       end
     end
   end

@@ -129,8 +129,13 @@ describe Player do
   end
 
   describe "reload" do
+    let(:reloaded_model) { Player.find_by_shadow(player.id).reload }
+    it "should no longer be a shadow_model" do
+      expect(reloaded_model).not_to be_shadow_model
+    end
+
     it "should reload remove the readonly attribute" do
-      expect(Player.find_by_shadow(player.id).reload).not_to be_readonly
+      expect(reloaded_model).not_to be_readonly
     end
   end
 end

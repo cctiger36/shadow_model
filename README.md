@@ -24,9 +24,6 @@ And use this to retrieve the model from redis.
 
     model = YourModelClass.find_by_shadow(primary_key)
 
-    model.is_a?(YourModelClass) # true
-    model.readonly?             # true
-
 ### options
 
 <table>
@@ -60,6 +57,15 @@ And use this to retrieve the model from redis.
         "result to cache"
       end
     end
+
+    player = Player.create(name: "player one")
+    shadow = Player.find_by_shadow(player.id)
+    shadow.is_a?(Player)     # true
+    shadow.shadow_model?     # true
+    shadow.readonly?         # true
+    shadow.reload            # reload from database
+    shadow.shadow_model?     # false
+    shadow.readonly?         # false
 
 ## Associations
 

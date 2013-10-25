@@ -111,6 +111,7 @@ module ShadowModel
       end
 
       def find_by_shadow(id)
+        raise "Cannot find seperate shadow cache with association_only option set" if options[:association_only]
         if shadow_data = find_shadow_data(id)
           instantiate_shadow_model(shadow_data)
         else

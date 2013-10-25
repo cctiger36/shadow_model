@@ -36,8 +36,9 @@ describe Player do
   context "the shadow model" do
     let(:shadow_player) { Player.find_by_shadow(player.id) }
 
-    it { shadow_player.should be_an_instance_of Player }
-    it { shadow_player.should be_shadow_model }
+    it { expect(shadow_player).to be_an_instance_of Player }
+    it { expect(shadow_player).to be_shadow_model }
+    it { expect(shadow_player).to be_persisted }
 
     it "should cannot be save or update" do
       expect{ shadow_player.save! }.to raise_error

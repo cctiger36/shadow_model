@@ -75,6 +75,8 @@ module ShadowModel
       def instantiate_shadow_model(shadow_data)
         instance = self.new
         instance.instance_variable_set(:@shadow_model, true)
+        instance.instance_variable_set(:@persisted, true)     # rails3
+        instance.instance_variable_set(:@new_record, false)   # rails4
         instance.send(:shadow_data=, shadow_data)
         instance.readonly!
         instance

@@ -54,15 +54,21 @@ And use this to retrieve the model from redis.
       shadow_model :name, :stamina, :cacheable_method, expiration: 30.minutes
 
       def cacheable_method
-        "result to cache"
+        # heavy computation here
+        "cacheable result"
       end
     end
 
     player = Player.create(name: "player one")
     shadow = Player.find_by_shadow(player.id)
+
     shadow.is_a?(Player)     # true
     shadow.shadow_model?     # true
     shadow.readonly?         # true
+
+    shadow.name              # "player one"
+    shadow.cacheable_method  # "cacheable result"
+
     shadow.reload            # reload from database
     shadow.shadow_model?     # false
     shadow.readonly?         # false

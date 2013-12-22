@@ -60,14 +60,14 @@ And use this to retrieve the model from redis.
     end
 
     player = Player.create(name: "player one")
-    shadow = Player.find_by_shadow(player.id)
+    shadow = Player.find_by_shadow(player.id)   # retrieve from redis
 
     shadow.is_a?(Player)     # true
     shadow.shadow_model?     # true
     shadow.readonly?         # true
 
     shadow.name              # "player one"
-    shadow.cacheable_method  # "cacheable result"
+    shadow.cacheable_method  # "cacheable result" (without recomputation)
 
     shadow.reload            # reload from database
     shadow.shadow_model?     # false

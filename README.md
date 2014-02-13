@@ -1,6 +1,6 @@
 # ShadowModel
 
-A rails plugin use redis to cache models data.
+A rails plugin use redis to cache models data. This will only cache the attributes and methods which you want rather than marshal the whole object. Bring with higher performance and less compatibility problems.
 
 [![Build Status](https://travis-ci.org/cctiger36/shadow_model.png?branch=master)](https://travis-ci.org/cctiger36/shadow_model) [![Gem Version](https://badge.fury.io/rb/shadow_model.png)](http://badge.fury.io/rb/shadow_model) [![Coverage Status](https://coveralls.io/repos/cctiger36/shadow_model/badge.png)](https://coveralls.io/r/cctiger36/shadow_model) [![Code Climate](https://codeclimate.com/github/cctiger36/shadow_model.png)](https://codeclimate.com/github/cctiger36/shadow_model) [![Dependency Status](https://gemnasium.com/cctiger36/shadow_model.png)](https://gemnasium.com/cctiger36/shadow_model)
 
